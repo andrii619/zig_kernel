@@ -16,7 +16,17 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    exe.setLinkerScript(.{ .src_path = .{ .owner = b, .sub_path = "./linker.ld" } });
+    const arch = target.query.cpu_arch.?;
+    const linker_script_path = switch (arch) {
+        .x86_64 => "linker/x86_64.ld",
+        .riscv64 => "linker/riscv64.ld",
+        else => {
+            @panic("Unsupported architecture for linker script");
+        },
+    };
+    std.debug.print("linker used: {s}\n", .{linker_script_path});
+
+    exe.setLinkerScript(.{ .src_path = .{ .owner = b, .sub_path = linker_script_path } });
     // exe.strip = true;
 
     b.installArtifact(exe);

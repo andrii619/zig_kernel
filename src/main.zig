@@ -33,3 +33,7 @@ pub fn panic(msg: []const u8, trace: ?*std.builtin.StackTrace, ret_addr: ?usize)
 //     // Do nothing, or halt the system
 //     while (true) {}
 // }
+
+export fn __stack_chk_fail() noreturn {
+    while (true) {} // Or halt the system
+}
